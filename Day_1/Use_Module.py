@@ -6,7 +6,7 @@ Import can be done entire module Or part of it.
 # Overall module import
 import Data_Processing
 
-res = Data_Processing.Process_Data (23.8, 'Word')
+res = Data_Processing.Process_Data (23.8, 13.5)
 print (res)
 print (Data_Processing.Module_Version)
 

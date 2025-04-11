@@ -15,8 +15,8 @@ def Process_Data (p1, p2):
 
     try:
 
-        r1 = p1 * 1.5
-        r2 = p2 * 1.5
+        r1 = p1 * fac
+        r2 = p2 * fac
 
         print (f"Processed data from module version {Module_Version}. The values are {r1}, {r2}")
 
