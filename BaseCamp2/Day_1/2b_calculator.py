@@ -25,4 +25,4 @@ def read_root():
 
 # Main program
 if __name__ == "__main__":
-    uvicorn.run("2b_calculator:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("2b_calculator:app", host="0.0.0.0", port=9321, reload=True)

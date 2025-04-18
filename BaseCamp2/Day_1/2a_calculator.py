@@ -25,11 +25,11 @@ def read_root():
 
 # Main program
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=9321)
 
 
 '''
 import requests
-response = requests.get("http://127.0.0.1:8000/add", params={"a": 5, "b": 3})
+response = requests.get("http://0.0.0.0:9321/add", params={"a": 5, "b": 3})
 print(response.json())
 '''
