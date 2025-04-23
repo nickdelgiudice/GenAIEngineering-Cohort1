@@ -241,6 +241,49 @@ git push -u origin main  # Sets up tracking for the branch
 git push --force origin main  # Overwrites remote branch (dangerous!)
 ```
 
+I'll introduce information about `git pull` to the GitHub Ready Reckoner markdown document. This would fit well in the "Working with Remote Repositories" section:
+
+## Git Pull
+
+The `git pull` command fetches changes from a remote repository and integrates them into your local branch.
+
+### Basic pull command
+
+```
+git pull <remote-name> <branch-name>
+git pull origin main
+```
+
+### What it does
+
+- Combines `git fetch` (downloads changes) and `git merge` (integrates changes) in one command
+- Updates your current branch with changes from the remote branch
+
+### Pull options
+
+```
+git pull --rebase              # Applies your local commits on top of the remote changes
+git pull --no-commit           # Fetches and merges but doesn't create an automatic commit
+git pull --ff-only             # Only pulls if a fast-forward merge is possible
+```
+
+### Handling merge conflicts
+
+If there are conflicts during a pull:
+
+1. Git will mark the conflicted files
+2. Manually resolve conflicts in each file
+3. Use `git add` to mark them as resolved
+4. Complete the merge with `git commit`
+
+### Best practices
+
+- Always commit or stash local changes before pulling
+- Use `git pull --rebase` to keep a cleaner history when working on shared branches
+- Consider using `git fetch` followed by `git merge` for more control over the integration process
+
+This section provides essential information about pulling changes from remote repositories, which is a fundamental part of collaborative Git workflows.
+
 ## Common Workflows
 
 ### Starting a new project
