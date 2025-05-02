@@ -4,6 +4,10 @@
 **/*.json
 **/*.csv
 remove.docx
-Week2
 git_training
 **/*.png
+**/.env
+**/*.pkl
+**/models/*
+**/Week2/Day_2/
+
