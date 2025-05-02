@@ -66,6 +66,15 @@
         <mxCell id="Sfod83gkRkYcB7nEeRrR-8" value="Pydantic (input checks)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=15;" vertex="1" parent="1">
           <mxGeometry x="352" y="670" width="168" height="30" as="geometry" />
         </mxCell>
+        <mxCell id="Sfod83gkRkYcB7nEeRrR-9" value="SimpleCalc" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="140" y="960" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Sfod83gkRkYcB7nEeRrR-10" value="SimpleText" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="280" y="960" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Sfod83gkRkYcB7nEeRrR-11" value="SimpleDB" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+          <mxGeometry x="432" y="960" width="80" height="80" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
