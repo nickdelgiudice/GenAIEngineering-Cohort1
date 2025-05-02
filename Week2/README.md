@@ -14,10 +14,10 @@ cd GenAIEngineering-Cohort1
 
 ## Navigate to the Week 1 Directory
 
-Move into the Week_1 directory:
+Move into the Week_2 directory:
 
 ```bash
-# Navigate to the day_1 directory
+# Navigate to the Week2 directory
 cd Week2
 ```
 
