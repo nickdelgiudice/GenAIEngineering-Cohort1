@@ -52,7 +52,7 @@
 
 # %%
 # Installing Prereqs
-!pip install -qq langchain-text-splitters langchain-community langchain-huggingface langchain-qdrant sentence-transformers qdrant-client numpy scikit-learn rank_bm25
+# pip install -qq langchain-text-splitters langchain-community langchain-huggingface langchain-qdrant sentence-transformers qdrant-client numpy scikit-learn rank_bm25
 
 
 # %% [markdown]
