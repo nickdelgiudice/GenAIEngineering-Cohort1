@@ -1,0 +1,58 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="RAG SQL Pipeline" id="oFMp5TphnmG80odLzQPy">
+    <mxGraphModel dx="1474" dy="789" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- User Prompt -->
+        <mxCell id="2" value="User Prompt + Table Name" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry x="120" y="20" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Get Schema -->
+        <mxCell id="3" value="Extract Table Schema (CSV Format)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;" vertex="1" parent="1">
+          <mxGeometry x="120" y="100" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- LLM Generate SQL -->
+        <mxCell id="4" value="LLM generates SQL Query" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;" vertex="1" parent="1">
+          <mxGeometry x="120" y="180" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Execute SQL -->
+        <mxCell id="5" value="Execute SQL on SQLite" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;" vertex="1" parent="1">
+          <mxGeometry x="120" y="260" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- JSON Results -->
+        <mxCell id="6" value="Format Results as JSON" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry x="120" y="340" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- LLM Answer -->
+        <mxCell id="7" value="LLM Generates Final Answer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;" vertex="1" parent="1">
+          <mxGeometry x="120" y="420" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- Arrows -->
+        <mxCell id="8" style="endArrow=block;html=1;" edge="1" parent="1" source="2" target="3">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="9" style="endArrow=block;html=1;" edge="1" parent="1" source="3" target="4">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="10" style="endArrow=block;html=1;" edge="1" parent="1" source="4" target="5">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" style="endArrow=block;html=1;" edge="1" parent="1" source="5" target="6">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" style="endArrow=block;html=1;" edge="1" parent="1" source="6" target="7">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

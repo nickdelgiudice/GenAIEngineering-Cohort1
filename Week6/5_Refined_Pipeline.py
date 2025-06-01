@@ -13,7 +13,7 @@ Prompt = "Tell me the lowest 5 scorers, despite of having parents having done Ba
 # Prompt = "Tell me who are the students having attendance below 60"
 # Prompt = "Tell me number of students based on their internet quality types"
 
-sql_engine = create_engine("sqlite:///Sample_2 - Copy.db")
+sql_engine = create_engine("sqlite:///Sample_2 copy.db")
 conn = sql_engine.connect ()
 
 # LLM Client
@@ -54,16 +54,20 @@ def extract_sql_query(text):
     """
     Extracts SQL query string from a block of text enclosed.
     Eg.  ```sql ... ```, '''sql ... '''
+    Also cleans trailing semicolon or unmatched closing parentheses.
     """
-    # Match common SQL code block styles
     pattern = r"(?:```sql|'''sql|```|''')\s*(.*?)\s*(?:```|'''|$)"
     match = re.search(pattern, text, re.DOTALL | re.IGNORECASE)
 
     if match:
-        return match.group(1).strip()
+        query = match.group(1).strip()
     else:
-        return text.strip()  # it's just raw SQL
-    
+        query = text.strip()
+
+    # Remove any trailing semicolon or unmatched parenthesis
+    cleaned = query.rstrip(';').rstrip(')')
+    return cleaned
+
 def RAG_Response (Client, Model, conn, table_name, Prompt) :
 
     ## For a User prompt, get the SQL query to be raised.
