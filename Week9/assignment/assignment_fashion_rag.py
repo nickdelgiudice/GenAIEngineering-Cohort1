@@ -85,16 +85,19 @@ def register_embedding_model(model_name: str = "open-clip") -> Any:
     """
     # TODO: Get the registry instance
     # registry = ?
+    registry = EmbeddingFunctionRegistry.get_instance()
 
     # TODO: Get and create the model
     # model = ?
+    model = registry.get(model_name).create()
 
     # TODO: Return the model
     # return ?
+    return model
 
     # DUMMY IMPLEMENTATION - Replace with actual code
-    print(f"⚠️ TODO: Register embedding model {model_name}")
-    return None
+    #print(f"⚠️ TODO: Register embedding model {model_name}")
+    #return None
 
 
 # Global embedding model
