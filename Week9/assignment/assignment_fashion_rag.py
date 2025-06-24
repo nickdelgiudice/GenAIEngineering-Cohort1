@@ -29,11 +29,13 @@ python assignment_fashion_rag.py --app
 
 import argparse
 import os
+from dotenv import load_dotenv
 import re
 
 # Suppress warnings
 import warnings
 from typing import Any, Dict, List, Optional, Tuple
+from itertools import islice
 
 # Gradio for web interface
 import gradio as gr
@@ -42,7 +44,6 @@ import gradio as gr
 import lancedb
 import pandas as pd
 import torch
-from datasets import load_dataset
 from lancedb.embeddings import EmbeddingFunctionRegistry
 from lancedb.pydantic import LanceModel, Vector
 from PIL import Image
@@ -51,6 +52,50 @@ from PIL import Image
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 warnings.filterwarnings("ignore")
+
+def setup_huggingface_environment(base_path: str = "/mnt/l"):
+    """
+    Set up environment variables for Hugging Face cache paths.
+
+    This is important to avoid downloading models and datasets to default locations
+    and to ensure they are stored in a custom directory, especially in Hugging Face Spaces.
+    """
+    # Set before importing or loading any model or dataset
+    os.environ["HF_HOME"] = f"{base_path}/huggingface"
+    os.environ["TRANSFORMERS_CACHE"] = f"{base_path}/transformers"
+    os.environ["HF_DATASETS_CACHE"] = f"{base_path}/datasets"
+
+    # Ensure the custom paths exist
+    os.makedirs(os.environ["HF_HOME"], exist_ok=True)
+    os.makedirs(os.environ["TRANSFORMERS_CACHE"], exist_ok=True)
+    os.makedirs(os.environ["HF_DATASETS_CACHE"], exist_ok=True)    
+
+    return True
+
+
+def preview_dataset(dataset_name: str = "tomytjandra/h-and-m-fashion-caption", sample_size: int = 5):
+    """
+    Preview a sample of the H&M Fashion dataset
+
+    Args:
+        dataset_name: Name of the dataset to load
+        sample_size: Number of samples to preview
+
+    Returns:
+        DataFrame with sample data
+    """
+    load_dotenv()
+    from datasets import load_dataset, config as datasets_config
+    print(f"📥 Loading dataset: {dataset_name}")
+    print("Cache Dir .Env:", os.environ["HF_DATASETS_CACHE"])
+    print("Cache dir:", datasets_config.HF_DATASETS_CACHE)
+    # split="train[:500]",  # Load just 500 records   OR  streaming=True
+    dataset = load_dataset(dataset_name, split="train[:500]", cache_dir=os.environ["HF_DATASETS_CACHE"])
+    # ---- NEW: grab the first `sample_size` records from the stream
+    rows = list(islice(dataset, sample_size))   # or list(dataset.take(sample_size))
+    df = pd.DataFrame(rows)
+    print(f"📋 Sample data:\n{df.head(sample_size)}")
+    return df
 
 
 def is_huggingface_space():
@@ -119,15 +164,30 @@ class FashionItem(LanceModel):
 
     # TODO: Add vector field for embeddings
     # vector = ?
-
+    #vector: Vector(clip_model.ndims()) = clip_model.VectorField()
+    
     # TODO: Add image field
     # image_uri = ?
+    #image_uri: str = clip_model.SourceField()
 
     # TODO: Add text description field
     # description = ?
+    #description: Optional[str] = clip_model.TextField(default=None)
 
     # DUMMY IMPLEMENTATION - Replace with actual schema
-    pass
+    #pass
+
+    
+    # @property
+    # def image(self):
+    #     if isinstance(self.image_uri, str) and os.path.exists(self.image_uri):
+    #         return Image.open(self.image_uri)
+    #     elif hasattr(self.image_uri, "save"):  # PIL Image object
+    #         return self.image_uri
+    #     else:
+    #         # Return a placeholder or handle the case appropriately
+    #         return None
+
 
 
 # =============================================================================
@@ -682,18 +742,30 @@ def main():
     """Main function to handle command line arguments and run the pipeline"""
 
     # If running in Hugging Face Spaces, automatically launch the app
-    if is_huggingface_space():
-        print("🤗 Running in Hugging Face Spaces - launching web app automatically")
-        launch_gradio_app()
-        return
+    # if is_huggingface_space():
+    #     print("🤗 Running in Hugging Face Spaces - launching web app automatically")
+    #     setup_huggingface_environment()
+    #     preview_dataset()
+    #     #launch_gradio_app()
+    #     return
 
     parser = argparse.ArgumentParser(
-        description="Fashion RAG Pipeline Assignment - SOLUTION"
+         description="Fashion RAG Pipeline Assignment - SOLUTION"
     )
-    parser.add_argument("--query", type=str, help="Search query (text or image path)")
+    parser.add_argument("--preview", action="store_true", help="Preview the source dataset")
     parser.add_argument("--app", action="store_true", help="Launch Gradio web app")
+    parser.add_argument("--query", type=str, help="Search query (text or image path)")
+
+    setup_huggingface_environment()
 
     args = parser.parse_args()
+
+
+
+    # Launch command line dataset preview if requested
+    if args.preview:
+        preview_dataset()
+        return
 
     # Launch web app if requested
     if args.app:
