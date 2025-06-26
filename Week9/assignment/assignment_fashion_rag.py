@@ -49,11 +49,11 @@ from lancedb.pydantic import LanceModel, Vector
 from PIL import Image
 
 # LLM dependencies
-from transformers import AutoModelForCausalLM, AutoTokenizer
+#from transformers import AutoModelForCausalLM, AutoTokenizer
 
 warnings.filterwarnings("ignore")
 
-def setup_huggingface_environment(base_path: str = "/mnt/l"):
+def setup_huggingface_environment(base_path: str = "/mnt/win11/remdev"):
     """
     Set up environment variables for Hugging Face cache paths.
 
@@ -128,6 +128,13 @@ def register_embedding_model(model_name: str = "open-clip") -> Any:
     Returns:
         Embedding model instance
     """
+
+    load_dotenv()
+    # LLM dependencies
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    print(f"📥 Loading model: {model_name}")
+    print("Cache Dir .Env:", os.environ["TRANSFORMERS_CACHE"])
+
     # TODO: Get the registry instance
     # registry = ?
     registry = EmbeddingFunctionRegistry.get_instance()
@@ -135,7 +142,7 @@ def register_embedding_model(model_name: str = "open-clip") -> Any:
     # TODO: Get and create the model
     # model = ?
     model = registry.get(model_name).create()
-
+    
     # TODO: Return the model
     # return ?
     return model
@@ -146,6 +153,7 @@ def register_embedding_model(model_name: str = "open-clip") -> Any:
 
 
 # Global embedding model
+setup_huggingface_environment()
 clip_model = register_embedding_model()
 
 
