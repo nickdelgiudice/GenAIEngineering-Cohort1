@@ -172,30 +172,28 @@ class FashionItem(LanceModel):
 
     # TODO: Add vector field for embeddings
     # vector = ?
-    #vector: Vector(clip_model.ndims()) = clip_model.VectorField()
+    vector: Vector(clip_model.ndims()) = clip_model.VectorField()
     
     # TODO: Add image field
     # image_uri = ?
-    #image_uri: str = clip_model.SourceField()
+    image_uri: str = clip_model.SourceField()
 
     # TODO: Add text description field
     # description = ?
-    #description: Optional[str] = clip_model.TextField(default=None)
+    description: Optional[str] = None
 
     # DUMMY IMPLEMENTATION - Replace with actual schema
     #pass
 
-    
-    # @property
-    # def image(self):
-    #     if isinstance(self.image_uri, str) and os.path.exists(self.image_uri):
-    #         return Image.open(self.image_uri)
-    #     elif hasattr(self.image_uri, "save"):  # PIL Image object
-    #         return self.image_uri
-    #     else:
-    #         # Return a placeholder or handle the case appropriately
-    #         return None
-
+    @property
+    def image(self):
+        if isinstance(self.image_uri, str) and os.path.exists(self.image_uri):
+            return Image.open(self.image_uri)
+        elif hasattr(self.image_uri, "save"):  # PIL Image object
+            return self.image_uri
+        else:
+            # Return a placeholder or handle the case appropriately
+            return None
 
 
 # =============================================================================
@@ -206,6 +204,7 @@ class FashionItem(LanceModel):
 def setup_fashion_database(
     database_path: str = "fashion_db",
     table_name: str = "fashion_items",
+    schema: Any = FashionItem,
     dataset_name: str = "tomytjandra/h-and-m-fashion-caption",
     sample_size: int = 1000,
     images_dir: str = "fashion_images",
@@ -221,54 +220,85 @@ def setup_fashion_database(
     5. Create vector database table
     """
 
+
     # TODO: Connect to LanceDB
     # db = ?
+    db = lancedb.connect(database_path)
 
     # TODO: Check if table already exists
-    # if table_name in db.table_names():
-    #     existing_table = ?            # open table
-    #     print(f"✅ Table '{table_name}' already exists with {len(existing_table)} items")
-    #     return
-    # else:
-    #     print(f"🏗️ Table '{table_name}' does not exist, creating new fashion database...")
+    if table_name in db.table_names():
+        existing_table = table_name      # open table
+        print(f"✅ Table '{table_name}' already exists with {len(existing_table)} items")
+        return
+    else:
+        print(f"🏗️ Table '{table_name}' does not exist, creating new fashion database...")
+
 
     # TODO: Load dataset from HuggingFace
-    # print("📥 Loading H&M fashion dataset...")
+    print("📥 Loading H&M fashion dataset...")
     # dataset = ?
     # train_data = dataset["train"]
+    # We want to make sure that we use the custom cache that we setup
+    load_dotenv()
+    from datasets import load_dataset, config as datasets_config
+    print(f"📥 Loading dataset: {dataset_name}")
+    print("Cache Dir .Env:", os.environ["HF_DATASETS_CACHE"])
+    print("Cache dir:", datasets_config.HF_DATASETS_CACHE)
+    dataset = load_dataset(dataset_name)
 
     # TODO: Sample data to specified size in the sample_size parameter
     # train_data = ?
-    # print(f"Processing {len(train_data)} fashion items...")
+    train_data = dataset["train"]
+
+    # Sample data if needed
+    # sample_size = 500
+    #if len(train_data) > sample_size:
+    #    indices = sample(range(len(train_data)), sample_size)
+    #    train_data = train_data.select(indices)
+
+    print(f"Processing {len(train_data)} fashion items...")
 
     # Create images directory
     os.makedirs(images_dir, exist_ok=True)
 
     # Process each item
-    # table_data = []
-    # for i, item in enumerate(train_data):
-    #     # Get image and text
-    #     image = item["image"]
-    #     text = item["text"]
+    table_data = []
+    for i, item in enumerate(train_data):
+        # Get image and text
+        image = item["image"]
+        text = item["text"]
 
-    #     # Save image
-    #     image_path = os.path.join(images_dir, f"fashion_{i:04d}.jpg")
-    #     image.save(image_path)
+        # Save image
+        image_path = os.path.join(images_dir, f"fashion_{i:04d}.jpg")
+        image.save(image_path)
 
-    #     # Create record
-    #     record = {
-    #         "image_uri": image_path,
-    #         "description": text
-    #     }
-    #     table_data.append(record)
+        # Create record
+        record = {
+            "image_uri": image_path,
+            "description": text
+        }
+        table_data.append(record)
 
-    #     if (i + 1) % 100 == 0:
-    #         print(f"   Processed {i + 1}/{len(train_data)} items...")
+        if (i + 1) % 100 == 0:
+            #print(f"\rProcessed {i}/{total} items...", end='', flush=True)
+            print(f"\r   Processed {i + 1}/{len(train_data)} items...",end='', flush=True)
 
     # TODO: Create vector database table
-    # print("🗄️ Creating vector database table...")
+    print("🗄️ Creating vector database table...")
     # table = ?
-    # print(f"✅ Created table '{table_name}' with {len(table_data)} items")
+    
+    if table_data:
+        if table_name in db:
+            db.drop_table(table_name)
+
+        table = db.create_table(table_name, schema=schema, mode="create")
+        table.add(pd.DataFrame(table_data))
+        print(f"Added {len(table_data)} shoes to table")
+    else:
+        print("No data to add")
+
+
+    print(f"✅ Created table '{table_name}' with {len(table_data)} items")
 
     # DUMMY IMPLEMENTATION
     print("⚠️ TODO: Implement database setup")
@@ -750,29 +780,29 @@ def main():
     """Main function to handle command line arguments and run the pipeline"""
 
     # If running in Hugging Face Spaces, automatically launch the app
-    # if is_huggingface_space():
-    #     print("🤗 Running in Hugging Face Spaces - launching web app automatically")
-    #     setup_huggingface_environment()
-    #     preview_dataset()
-    #     #launch_gradio_app()
-    #     return
+    if is_huggingface_space():
+        print("🤗 Running in Hugging Face Spaces - launching web app automatically")
+        launch_gradio_app()
+        return
 
     parser = argparse.ArgumentParser(
          description="Fashion RAG Pipeline Assignment - SOLUTION"
     )
     parser.add_argument("--preview", action="store_true", help="Preview the source dataset")
+    parser.add_argument("--setup", action="store_true", help="Setup LanceDB")
     parser.add_argument("--app", action="store_true", help="Launch Gradio web app")
     parser.add_argument("--query", type=str, help="Search query (text or image path)")
 
-    setup_huggingface_environment()
-
     args = parser.parse_args()
-
-
 
     # Launch command line dataset preview if requested
     if args.preview:
         preview_dataset()
+        return
+
+    # Launch command line dataset preview if requested
+    if args.setup:
+        setup_fashion_database()
         return
 
     # Launch web app if requested
@@ -783,6 +813,7 @@ def main():
     if not args.query:
         print("❌ Please provide a query with --query or use --app for web interface")
         print("Examples:")
+        print("  python solution_fashion_rag.py --preview")
         print("  python solution_fashion_rag.py --query 'black dress for evening'")
         print("  python solution_fashion_rag.py --query 'fashion_images/dress.jpg'")
         print("  python solution_fashion_rag.py --app")
