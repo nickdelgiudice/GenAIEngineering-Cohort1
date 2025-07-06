@@ -22,6 +22,9 @@ MCP_SERVER_URL = "http://localhost:9321/sse"
 if 'MISTRAL_KEY' not in os.environ:
     raise ValueError("MISTRAL_KEY environment variable is not set.")
 mistral = Mistral(api_key=os.getenv('MISTRAL_KEY'))
+#print(os.getenv('MISTRAL_KEY')) # Debugging: print the Mistral API key
+global MISTRAL_KEY
+MISTRAL_KEY = os.getenv('MISTRAL_KEY')
 
 # Global variables
 available_tools = []
@@ -48,8 +51,8 @@ async def initialize_tools():
 def initialize_mistral():
     """Initialize Mistral AI client"""
     global mistral_client
-    if MISTRAL_API_KEY and MISTRAL_API_KEY != "your-mistral-api-key-here":
-        mistral_client = Mistral(api_key=MISTRAL_API_KEY)
+    if MISTRAL_KEY and MISTRAL_KEY != "your-mistral-api-key-here":
+        mistral_client = Mistral(api_key=MISTRAL_KEY)
         print("🤖 Mistral AI client initialized")
     else:
         print("⚠️  Mistral AI not configured")
