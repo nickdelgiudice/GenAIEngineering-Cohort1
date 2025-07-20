@@ -1,0 +1,45 @@
+@startuml
+
+class PythonAgent {
+    - name: string = "IMDB EDA Agent"
+    - model: OpenAIChat
+    - base_dir: Path
+    - files: List<CsvFile>
+    - charting_libraries: List<string>
+    - instructions: List<string>
+    - markdown: bool
+    - pip_install: bool
+    - show_tool_calls: bool
+    - save_and_run: bool
+    + print_response(response: string, stream: bool)
+}
+
+class OpenAIChat {
+    - id: string = "gpt-4o"
+}
+
+class CsvFile {
+    - path: string
+    - description: string
+}
+
+class Environment {
+    + set_variable(key: string, value: string)
+    + remove_variable(key: string)
+}
+
+PythonAgent "1" *-- "1" OpenAIChat : uses
+PythonAgent "1" *-- "1..*" CsvFile : loads
+Environment "1" *-- "*" PythonAgent : configures
+
+note bottom of Environment
+  Environment variables setup and management
+end note
+
+note bottom of PythonAgent
+  - Comprehensive EDA request execution
+  - Loads datasets
+  - Provides visualization and insights
+end note
+
+@enduml
