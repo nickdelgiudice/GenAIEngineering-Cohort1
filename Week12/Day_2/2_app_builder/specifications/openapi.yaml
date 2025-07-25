@@ -1,0 +1,228 @@
+openapi: 3.0.3
+info:
+  title: TaskMaster Pro API
+  description: A task management system that allows users to create, edit, and track
+    tasks, set due dates, priorities, and assign tasks to team members.
+  version: 1.0.0
+servers:
+- url: https://api.taskmasterpro.com/v1
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        dueDate:
+          type: string
+          format: date-time
+        priority:
+          type: string
+          enum:
+          - low
+          - medium
+          - high
+        assignedTo:
+          $ref: '#/components/schemas/User'
+        status:
+          type: string
+          enum:
+          - pending
+          - in_progress
+          - completed
+    CreateTaskRequest:
+      type: object
+      required:
+      - title
+      - dueDate
+      - priority
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        dueDate:
+          type: string
+          format: date-time
+        priority:
+          type: string
+          enum:
+          - low
+          - medium
+          - high
+        assignedTo:
+          type: string
+    Notification:
+      type: object
+      properties:
+        message:
+          type: string
+        taskId:
+          type: string
+    Report:
+      type: object
+      properties:
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        productiveHours:
+          type: integer
+paths:
+  /tasks:
+    get:
+      summary: Retrieve all tasks
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: A list of tasks.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized
+    post:
+      summary: Create a new task
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '201':
+          description: Task successfully created
+        '400':
+          description: Invalid input
+  /tasks/{taskId}:
+    parameters:
+    - name: taskId
+      in: path
+      required: true
+      description: ID of task to retrieve
+      schema:
+        type: string
+    get:
+      summary: Retrieve a single task by ID
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: The task with the corresponding ID
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized
+        '404':
+          description: Task not found
+    put:
+      summary: Update a task
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '200':
+          description: Task successfully updated
+        '400':
+          description: Invalid input
+        '404':
+          description: Task not found
+    delete:
+      summary: Delete a task
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: Task successfully deleted
+        '404':
+          description: Task not found
+  /dashboard:
+    get:
+      summary: Retrieve dashboard with task progress
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Current task progress dashboard
+        '401':
+          description: Unauthorized
+  /notifications:
+    get:
+      summary: Retrieve notifications for task deadlines
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: List of notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+        '401':
+          description: Unauthorized
+  /reports:
+    get:
+      summary: Generate productivity report
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: startDate
+        in: query
+        required: true
+        description: Start date for the report
+        schema:
+          type: string
+          format: date
+      - name: endDate
+        in: query
+        required: true
+        description: End date for the report
+        schema:
+          type: string
+          format: date
+      responses:
+        '200':
+          description: Productivity report generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+        '401':
+          description: Unauthorized
+        '400':
+          description: Invalid date range

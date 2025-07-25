@@ -228,7 +228,7 @@ async def main():
     research_result = await client.send_message_and_wait(
         "http://localhost:9321",
         "Research the current state of AI agent market adoption",
-        max_wait_time=120  # 2 minutes timeout
+        max_wait_time=240  # 2 minutes timeout
     )
     
     if research_result and research_result.get('status') == 'completed':
@@ -258,7 +258,7 @@ async def main():
     planning_result = await client.send_message_and_wait(
         "http://localhost:9331",
         "Create a go-to-market strategy for AI agent platforms based on the research above",
-        max_wait_time=120  # 2 minutes timeout
+        max_wait_time=240  # 2 minutes timeout
     )
     
     if planning_result and planning_result.get('status') == 'completed':

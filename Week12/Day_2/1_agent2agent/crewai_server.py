@@ -1,4 +1,5 @@
 import asyncio
+import traceback
 import uuid
 import uvicorn
 from typing import Any
@@ -156,14 +157,15 @@ def create_crewai_server(port=9321):
     
     # Create FastA2A app
     try:
+        #app = FastA2A(storage=storage, broker=broker, worker=worker)
         app = FastA2A(storage=storage, broker=broker, worker=worker)
         print("✅ FastA2A app created successfully")
     except Exception as e:
         print(f"❌ Error creating FastA2A app: {e}")
+        traceback.print_exc()
         # Fallback: create FastAPI app manually
         app = FastAPI()
         print("✅ Using fallback FastAPI app")
-    
     # Add agent discovery endpoint
     @app.get("/.well-known/agent.json")
     async def get_agent_info():

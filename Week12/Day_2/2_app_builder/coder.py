@@ -1,7 +1,5 @@
 import os
 from dotenv import load_dotenv
-# Load environment variables
-load_dotenv()
 
 # Clear conflicting environment variables
 env_vars_to_clear = ['OPENAI_API_KEY', 'OPENAI_BASE_URL', 'OPENAI_API_BASE']
@@ -9,20 +7,11 @@ for var in env_vars_to_clear:
     if os.getenv(var):
         print(f"⚠️  Removing conflicting {var}")
         del os.environ[var]
-os.environ["OPENAI_API_KEY"] = os.getenv("OPEN_AI_KEY")
 
-import os
-from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
+os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
-# Clear conflicting environment variables
-env_vars_to_clear = ['OPENAI_API_KEY', 'OPENAI_BASE_URL', 'OPENAI_API_BASE']
-for var in env_vars_to_clear:
-    if os.getenv(var):
-        print(f"⚠️  Removing conflicting {var}")
-        del os.environ[var]
-os.environ["OPENAI_API_KEY"] = os.getenv("OPEN_AI_KEY")
 
 import json
 import yaml

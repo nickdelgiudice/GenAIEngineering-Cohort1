@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+.eggs/
+*.egg
+*.manifest
+*.spec
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+.eggs/
+.parts/
+sdist/
+var/
+wheels/
+
+# JavaScript
+node_modules/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+package-lock.json
+yarn.lock
+
+# Environments
+.env
+.env.*
+
+# IDE Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.data
+
+# The PyCharm .idea/* folder is ignored because this IDE
+# is not suited for collaborative development.
+# PyCharm is best used locally on each developers machine because different projects may need
+different settings.
+.idea/
