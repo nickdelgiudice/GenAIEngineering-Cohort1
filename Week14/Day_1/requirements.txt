@@ -4,6 +4,7 @@ langchain_openai
 langchain-experimental
 langchain-core
 langchain-community
+transformers
 pandas
 openai
 tqdm
@@ -11,3 +12,5 @@ python-dotenv
 faiss-cpu
 tiktoken
 tabulate
+matplotlib
+sentence-transformers
