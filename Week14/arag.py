@@ -1,5 +1,7 @@
 import streamlit as st
 import os
+#os.environ["LANGCHAIN_TRACING_V2"] = "false"
+from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain.agents import create_react_agent, AgentExecutor
 from langchain.tools import Tool
@@ -9,13 +11,16 @@ import wikipedia
 import arxiv
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.vectorstores import FAISS
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.prompts import ChatPromptTemplate
 import tempfile
 import shutil
+
+# Load environment variables from .env file
+load_dotenv()
 
 # ----------------------------
 # Streamlit App Configuration
@@ -27,8 +32,8 @@ st.title("🔍 Agentic RAG with Tavily + GPT-4 (OpenRouter) + HuggingFace Embedd
 # API Key Inputs
 # ----------------------------
 st.sidebar.header("API Keys")
-openrouter_key = st.sidebar.text_input("OpenRouter API Key", type="password")
-tavily_key = st.sidebar.text_input("Tavily API Key", type="password")
+openrouter_key = st.sidebar.text_input("OpenRouter API Key", value=os.getenv("OPENROUTER_API_KEY", ""), type="password")
+tavily_key = st.sidebar.text_input("Tavily API Key", value=os.getenv("TVLY_API_KEY", ""), type="password")
 
 # ----------------------------
 # Query Examples

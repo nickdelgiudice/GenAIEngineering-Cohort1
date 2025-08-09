@@ -15,3 +15,19 @@ openai
 
 # Data validation (required by LangChain)
 pydantic
+
+# Environment variable management
+python-dotenv
+
+# HuggingFace integration
+langchain-huggingface
+
+tavily-client
+
+wikipedia
+
+arxiv
+
+pypdf
+
+
